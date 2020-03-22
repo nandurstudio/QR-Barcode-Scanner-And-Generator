@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_qr_scanner"
+            android:icon="@drawable/ic_qr_scan"
+            android:title="@string/qr_scanner" />
+        <item
+            android:id="@+id/nav_qr_generator"
+            android:icon="@drawable/ic_qrcode"
+            android:title="@string/qr_generator" />
+        <item
+            android:id="@+id/nav_slideshow"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/menu_slideshow" />
+    </group>
+</menu>

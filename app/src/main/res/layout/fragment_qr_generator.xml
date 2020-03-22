@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    tools:context=".ui.generator.GeneratorFragment">
+
+
+    <ImageView
+        android:padding="@dimen/activity_horizontal_margin"
+        android:id="@+id/generated_qr_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_launcher_background"
+        android:contentDescription="TODO"
+        tools:ignore="HardcodedText" />
+
+    <EditText
+        android:autofillHints="@string/nav_header_title"
+        android:id="@+id/editText"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="text"
+        android:text="@string/nav_header_title"
+        tools:ignore="LabelFor" />
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

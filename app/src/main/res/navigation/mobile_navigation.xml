@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_qr_scanner">
+
+    <fragment
+        android:id="@+id/nav_qr_scanner"
+        android:name="com.nandur.qrcodescanner.ui.scanner.QrScannerFragment"
+        android:label="@string/qr_scanner"
+        tools:layout="@layout/fragment_qr_scanner">
+
+        <!--        <action
+                    android:id="@+id/action_HomeFragment_to_HomeSecondFragment"
+                    app:destination="@id/nav_home_second" />-->
+    </fragment>
+    <!--    <fragment
+            android:id="@+id/nav_home_second"
+            android:name="com.nandur.qrcodescanner.ui.scanner.HomeSecondFragment"
+            android:label="@string/home_second"
+            tools:layout="@layout/fragment_home_second">
+            <action
+                android:id="@+id/action_HomeSecondFragment_to_HomeFragment"
+                app:destination="@id/nav_qr_scanner" />
+
+            <argument
+                android:name="myArg"
+                app:argType="string" />
+        </fragment>-->
+
+    <fragment
+        android:id="@+id/nav_qr_generator"
+        android:name="com.nandur.qrcodescanner.ui.generator.GeneratorFragment"
+        android:label="@string/qr_generator"
+        tools:layout="@layout/fragment_qr_generator" />
+
+    <fragment
+        android:id="@+id/nav_slideshow"
+        android:name="com.nandur.qrcodescanner.ui.slideshow.SlideshowFragment"
+        android:label="@string/menu_slideshow"
+        tools:layout="@layout/fragment_slideshow" />
+</navigation>

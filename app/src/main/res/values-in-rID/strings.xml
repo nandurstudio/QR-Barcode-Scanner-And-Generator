@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="action_settings">Pengaturan</string>
+    <string name="menu_home">Beranda</string>
+    <string name="menu_gallery">Galeri</string>
+    <string name="scan_message">Scan Barcode atau QR Code</string>
+</resources>
