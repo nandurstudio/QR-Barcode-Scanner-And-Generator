@@ -18,6 +18,7 @@ public class SlideshowFragment extends Fragment {
     View root = inflater.inflate(R.layout.fragment_slideshow, container, false);
 
 
+
     return root;
   }
 }

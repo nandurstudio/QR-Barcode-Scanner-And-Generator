@@ -4,4 +4,17 @@
     <string name="menu_home">Beranda</string>
     <string name="menu_gallery">Galeri</string>
     <string name="scan_message">Scan Barcode atau QR Code</string>
+    <string name="about_header">Tentang</string>
+    <string name="update_header">Pembaruan</string>
+    <string name="help_header">Bantuan</string>
+    <string name="about_summary">QR Barcode Scanner And Generator adalah aplikasi yang membuat pekerjaan Anda lebih mudah.\nDengan adanya fitur QR Scanner, QR Generator dan OCR serta share text to QR menjadikan aplikasi ini lebih lengkap dari QR scanner biasa.\nDikembangkan oleh Nandur93 Studio - Karawang, Indonesia.</string>
+    <string name="update_title">Periksa pembaruan</string>
+    <string name="feedback_title">Masukan</string>
+    <string name="choose_email_client">Pilih layanan pesan</string>
+    <string name="feedback_body">Pembaruan untuk</string>
+    <string name="version_title">Versi</string>
+    <string name="update_summary">Klik disini untuk memperbarui</string>
+    <string name="feedback_summary">Laporkan masalah teknis atau menyarankan fitur baru</string>
+    <string name="menu_title_communicate">Komunikasi</string>
+    <string name="pattern_mailbody">\n\n-----------------------------\nJangan hapus bagian ini\nDevice OS: Android\nDevice OS version: {0}\nApp Version: {1}\nDevice Brand: {2}\nDevice Model: {3}\nDevice Manufacturer: {4}</string>
 </resources>
