@@ -1,7 +1,12 @@
 package com.nandur.qrcodescanner;
 
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -18,6 +23,8 @@ import com.google.android.material.snackbar.Snackbar;
 public class MainActivity extends AppCompatActivity {
 
   private AppBarConfiguration mAppBarConfiguration;
+  public static String versName;
+  public static int versCode;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +46,17 @@ public class MainActivity extends AppCompatActivity {
     NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
     NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
     NavigationUI.setupWithNavController(navigationView, navController);
+
+    //getVersionName
+    try {
+      PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+      versName = pInfo.versionName;
+      versCode = pInfo.versionCode;
+      Log.d("MyApp", "Version Name : " + versName + "\n Version Code : " + versCode);
+    } catch (PackageManager.NameNotFoundException e) {
+      e.printStackTrace();
+      Log.d("MyApp", "PackageManager Catch : " + e.toString());
+    }
   }
 
   @Override
@@ -46,6 +64,27 @@ public class MainActivity extends AppCompatActivity {
     // Inflate the menu; this adds items to the action bar if it is present.
     getMenuInflater().inflate(R.menu.main, menu);
     return true;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    // Handle action bar item clicks here. The action bar will
+    // automatically handle clicks on the Home/Up button, so long
+    // as you specify a parent activity in AndroidManifest.xml.
+    int id = item.getItemId();
+
+    if (id == R.id.action_settings) {
+      goToSetting();
+      return true;
+    }
+
+    return super.onOptionsItemSelected(item);
+  }
+
+  private void goToSetting() {
+    Intent settingsIntent = new
+            Intent(MainActivity.this, SettingsActivity.class);
+    startActivity(settingsIntent);
   }
 
   @Override

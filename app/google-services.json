@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "265585265983",
+    "firebase_url": "https://qr-barcode-scanner-gener-efc55.firebaseio.com",
+    "project_id": "qr-barcode-scanner-gener-efc55",
+    "storage_bucket": "qr-barcode-scanner-gener-efc55.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:265585265983:android:de72fe0d07d2d41f89578a",
+        "android_client_info": {
+          "package_name": "com.nandur.qrcodescanner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "265585265983-3hb8vs0bm6bq9miqheaiq94kqru0k8jo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBfPfKpbUpx0qJEPmGPq3wUrxIx3QnQEk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "265585265983-3hb8vs0bm6bq9miqheaiq94kqru0k8jo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,62 @@
+<!--
+  ~ Copyright 2018 The app Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:title="@string/about_header"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            app:key="about"
+            app:title="@string/about_header"
+            app:summary="@string/about_summary"
+            app:iconSpaceReserved="false"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/update_header"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            app:key="current_version"
+            app:title="@string/version_title"
+            app:summary="@string/version_summary"
+            app:iconSpaceReserved="false"/>
+
+        <Preference
+            app:key="check_update"
+            app:title="@string/update_title"
+            app:summary="@string/update_summary"
+            app:iconSpaceReserved="false"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="help_category"
+        app:title="@string/help_header"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            app:key="feedback"
+            app:summary="@string/feedback_summary"
+            app:title="@string/feedback_title"
+            app:iconSpaceReserved="false"/>
+
+    </PreferenceCategory>
+
+</androidx.preference.PreferenceScreen>
