@@ -8,8 +8,11 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaScannerConnection;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
@@ -33,6 +36,7 @@ import com.nandur.qrcodescanner.vision.ocrreader.OcrCaptureActivity;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.Objects;
 
@@ -46,6 +50,8 @@ public class GeneratorFragment extends Fragment {
   private SharedPreferences sharedPreferences;
   private String ocrData;
   private ImageView qrGeneratedImage;
+  private File myDir;
+  private File file;
 
   public View onCreateView(@NonNull LayoutInflater inflater,
                            ViewGroup container, Bundle savedInstanceState) {
@@ -54,6 +60,8 @@ public class GeneratorFragment extends Fragment {
     Button ocrButton = root.findViewById(R.id.ocr_button);
     qrGeneratedImage = root.findViewById(R.id.generated_qr_image);
     ocrButton.setOnClickListener(v -> launchOcr());
+    String rootDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
+    myDir = new File(rootDirectory + "/OCR to QR/");
     sharedPreferences = Objects.requireNonNull(this.getContext()).getSharedPreferences(OCR_DATA_FREPS, Context.MODE_PRIVATE);
     inputText = root.findViewById(R.id.qr_input_editText);
     inputText.addTextChangedListener(new TextWatcher() {
@@ -116,14 +124,13 @@ public class GeneratorFragment extends Fragment {
 
   @Override
   public void onResume() {
-    // ... do your thing
     ocrData = sharedPreferences.getString("ocr_data", getString(R.string.app_name));
-    //returns value for the given key.
     Toast.makeText(getActivity(), ocrData, Toast.LENGTH_SHORT).show();
     inputText.setText(ocrData);
     QR_CONTENT = ocrData;
     generateQrCode();
     qrGeneratedImage.setOnClickListener(v -> saveImage());
+    qrGeneratedImage.setOnLongClickListener(v -> shareImage());
     super.onResume();
   }
 
@@ -132,16 +139,14 @@ public class GeneratorFragment extends Fragment {
     CharSequence timestamp = DateFormat.format("MM-dd-yy HH:mm:ss", d.getTime());
     //    int yYear = Calendar.getInstance().get(Calendar.YEAR);
     //    int wWeek = Calendar.getInstance().get(Calendar.WEEK_OF_YEAR);
-    String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
     // File myDir = new File(root + "/Verifikasi Kode/" + yYear + "/RPS " + wWeek);
-    File myDir = new File(root + "/OCR to QR/");
     myDir.mkdirs();
 /*        Random generator = new Random();
         int n = 10000;
         n = generator.nextInt(n);*/
 
     String fname = ocrData + "_" + timestamp + ".jpg";
-    File file = new File(myDir, fname);
+    file = new File(myDir, fname);
     if (file.exists())
       file.delete();
     try {
@@ -164,6 +169,33 @@ public class GeneratorFragment extends Fragment {
               Log.i("ExternalStorage", "Scanned " + path + ":");
               Log.i("ExternalStorage", "-> uri=" + uri);
             });
+  }
+
+  private boolean shareImage() {
+    saveImage();
+    if (Build.VERSION.SDK_INT >= 24) {
+      try {
+        Method m = StrictMode.class.getMethod("disableDeathOnFileUriExposure");
+        m.invoke(null);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+    /**
+     * Used by lame internal apps that haven't done the hard work to get
+     * themselves off file:// Uris yet.
+     */
+    // https://stackoverflow.com/questions/38200282/android-os-fileuriexposedexception-file-storage-emulated-0-test-txt-exposed
+    Intent shareIntent;
+    Uri bmpUri = Uri.fromFile(file);
+    shareIntent = new Intent(android.content.Intent.ACTION_SEND);
+    shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+    shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
+    shareIntent.putExtra(Intent.EXTRA_TEXT, "Hey please check this application " + "https://play.google.com/store/apps/details?id=" + Objects.requireNonNull(getContext()).getPackageName());
+    shareIntent.setType("image/png");
+    startActivity(Intent.createChooser(shareIntent, "Share with"));
+    return true;
   }
 
   private void launchOcr() {
