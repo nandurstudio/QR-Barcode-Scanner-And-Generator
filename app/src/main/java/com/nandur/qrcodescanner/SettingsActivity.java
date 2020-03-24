@@ -2,7 +2,6 @@ package com.nandur.qrcodescanner;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -71,7 +70,7 @@ public class SettingsActivity extends AppCompatActivity {
       }
 
       if (prefCheckUpdate != null) {
-        String update_xml = getResources().getString(R.string.update_xml_resource);
+        // String update_xml = getResources().getString(R.string.update_xml_resource);
         prefCheckUpdate.setOnPreferenceClickListener(preference -> {
           new AppUpdater(Objects.requireNonNull(getContext()))
                   .showEvery(250)
@@ -121,17 +120,12 @@ public class SettingsActivity extends AppCompatActivity {
    * useful when providing support
    */
   public static void sendFeedback(Context context) {
-    String body = null;
     String feedBody = context.getString(R.string.feedback_body);
     String appName = context.getString(R.string.app_name);
     String emailClient = context.getString(R.string.choose_email_client);
     String targetMail = context.getResources().getString(R.string.nav_header_subtitle);
     String patterMailBody = context.getResources().getString(R.string.pattern_mailbody);
-    try {
-      body = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
-      body = MessageFormat.format(patterMailBody, Build.VERSION.RELEASE, body, Build.BRAND, Build.MODEL, Build.MANUFACTURER);
-    } catch (PackageManager.NameNotFoundException ignored) {
-    }
+    String body = MessageFormat.format(patterMailBody, Build.VERSION.RELEASE, versName, Build.BRAND, Build.MODEL, Build.MANUFACTURER, versCode);
     Intent intent = new Intent(Intent.ACTION_SEND);
     intent.setType("message/rfc822");
     intent.putExtra(Intent.EXTRA_EMAIL, new String[]{targetMail});

@@ -1,12 +1,19 @@
 package com.nandur.qrcodescanner.ui.generator;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaScannerConnection;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.zxing.BarcodeFormat;
@@ -23,6 +31,9 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 import com.nandur.qrcodescanner.R;
 import com.nandur.qrcodescanner.vision.ocrreader.OcrCaptureActivity;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Date;
 import java.util.Objects;
 
 import static com.nandur.qrcodescanner.vision.ocrreader.OcrCaptureActivity.OCR_DATA_FREPS;
@@ -32,13 +43,18 @@ public class GeneratorFragment extends Fragment {
   private String QR_CONTENT;
   private EditText inputText;
   private View root;
+  private SharedPreferences sharedPreferences;
+  private String ocrData;
+  private ImageView qrGeneratedImage;
 
   public View onCreateView(@NonNull LayoutInflater inflater,
                            ViewGroup container, Bundle savedInstanceState) {
     root = inflater.inflate(R.layout.fragment_qr_generator, container, false);
     generateQrCode();
     Button ocrButton = root.findViewById(R.id.ocr_button);
+    qrGeneratedImage = root.findViewById(R.id.generated_qr_image);
     ocrButton.setOnClickListener(v -> launchOcr());
+    sharedPreferences = Objects.requireNonNull(this.getContext()).getSharedPreferences(OCR_DATA_FREPS, Context.MODE_PRIVATE);
     inputText = root.findViewById(R.id.qr_input_editText);
     inputText.addTextChangedListener(new TextWatcher() {
       public void afterTextChanged(Editable s) {
@@ -55,22 +71,99 @@ public class GeneratorFragment extends Fragment {
       }
     });
 
+    //Permission Marshmelo
+    ActivityCompat.requestPermissions(Objects.requireNonNull(getActivity()),
+            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+            1);
+
+    Bundle extras = getActivity().getIntent().getExtras();
+    byte[] b = new byte[0];
+    if (extras != null) {
+      b = extras.getByteArray("picture");
+    }
+    Bitmap bitmap = null;
+    if (b != null) {
+      bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
+    }
+    qrGeneratedImage.setImageBitmap(bitmap);
     return root;
+  }
+
+  //Permission Marshmelo
+  @Override
+  public void onRequestPermissionsResult(int requestCode,
+                                         @NonNull String[] permissions, @NonNull int[] grantResults) {
+    // If request is cancelled, the textViewResult arrays are empty.
+    if (requestCode == 1) {
+      if (grantResults.length > 0
+              && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        Log.d("SDCard", "Akses diizinkan");
+        // Toast.makeText(getApplicationContext(), "Akses diijinkan", Toast.LENGTH_SHORT).show();
+        // permission was granted, yay! Do the
+        // contacts-related task you need to do.
+
+      } else {
+
+        // permission denied, boo! Disable the
+        // functionality that depends on this permission.
+        Toast.makeText(getActivity(), "Akses ke SDCARD tidak diijinkan, aplikasi tidak bisa menyimpan gambar", Toast.LENGTH_SHORT).show();
+      }
+
+      // other 'case' lines to check for other
+      // permissions this app might request
+    }
   }
 
   @Override
   public void onResume() {
-    if (isAdded() && isVisible() && getUserVisibleHint()) {
-      // ... do your thing
-      SharedPreferences sharedPreferences = Objects.requireNonNull(this.getContext()).getSharedPreferences(OCR_DATA_FREPS, Context.MODE_PRIVATE);
-      String ocrData = sharedPreferences.getString("ocr_data", getString(R.string.app_name));
-      //returns value for the given key.
-      Toast.makeText(getActivity(), ocrData, Toast.LENGTH_SHORT).show();
-      inputText.setText(ocrData);
-      QR_CONTENT= ocrData;
-      generateQrCode();
-    }
+    // ... do your thing
+    ocrData = sharedPreferences.getString("ocr_data", getString(R.string.app_name));
+    //returns value for the given key.
+    Toast.makeText(getActivity(), ocrData, Toast.LENGTH_SHORT).show();
+    inputText.setText(ocrData);
+    QR_CONTENT = ocrData;
+    generateQrCode();
+    qrGeneratedImage.setOnClickListener(v -> saveImage());
     super.onResume();
+  }
+
+  private void saveImage() {
+    Date d = new Date();
+    CharSequence timestamp = DateFormat.format("MM-dd-yy HH:mm:ss", d.getTime());
+    //    int yYear = Calendar.getInstance().get(Calendar.YEAR);
+    //    int wWeek = Calendar.getInstance().get(Calendar.WEEK_OF_YEAR);
+    String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
+    // File myDir = new File(root + "/Verifikasi Kode/" + yYear + "/RPS " + wWeek);
+    File myDir = new File(root + "/OCR to QR/");
+    myDir.mkdirs();
+/*        Random generator = new Random();
+        int n = 10000;
+        n = generator.nextInt(n);*/
+
+    String fname = ocrData + "_" + timestamp + ".jpg";
+    File file = new File(myDir, fname);
+    if (file.exists())
+      file.delete();
+    try {
+      FileOutputStream out = new FileOutputStream(file);
+      qrGeneratedImage.setDrawingCacheEnabled(true);
+      qrGeneratedImage.buildDrawingCache();
+      Bitmap bitmap = Bitmap.createBitmap(qrGeneratedImage.getDrawingCache());
+      qrGeneratedImage.setDrawingCacheEnabled(false);
+      bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+      out.flush();
+      out.close();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    Toast.makeText(getContext(), "Hasil disimpan di " + file, Toast.LENGTH_LONG).show();
+    // Tell the media scanner about the new file so that it is
+    // immediately available to the userEmail.
+    MediaScannerConnection.scanFile(getActivity(), new String[]{file.toString()}, null,
+            (path, uri) -> {
+              Log.i("ExternalStorage", "Scanned " + path + ":");
+              Log.i("ExternalStorage", "-> uri=" + uri);
+            });
   }
 
   private void launchOcr() {
