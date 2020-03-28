@@ -32,6 +32,15 @@
                 android:contentDescription="@string/realtime_qr_generator"
                 android:src="@drawable/ic_launcher_background" />
 
+            <TextView
+                android:id="@+id/qr_caption"
+                android:layout_width="@dimen/qr_code_size"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:background="#fff"
+                android:text="@string/app_name" />
+
             <View
                 android:id="@+id/bottom_view"
                 android:layout_width="match_parent"

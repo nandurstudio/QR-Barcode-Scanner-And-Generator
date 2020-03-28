@@ -49,6 +49,7 @@
     <string name="title_activity_ocr" translatable="false">OCR ML KIT</string>
     <string name="bitly_dynamic" translatable="false">ocrtoqr</string>
     <string name="type_here_to_generate_qr">Type here to generate QR</string>
-    <string name="realtime_qr_generator">Realtime QR generator view</string>
-    <string name="button_scan_ocr">OCR to QR</string>
+    <string name="realtime_qr_generator" translatable="false">Realtime QR generator view</string>
+    <string name="button_scan_ocr" translatable="false">OCR to QR</string>
+    <string name="disableDeathOnFileUriExposure" translatable="false">disableDeathOnFileUriExposure</string>
 </resources>

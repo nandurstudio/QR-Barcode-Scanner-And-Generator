@@ -17,4 +17,5 @@
     <string name="feedback_summary">Laporkan masalah teknis atau menyarankan fitur baru</string>
     <string name="menu_title_communicate">Komunikasi</string>
     <string name="pattern_mailbody">\n\n-----------------------------\nJangan hapus bagian ini\nDevice OS: Android\nDevice OS version: {0}\nApp Version: {1} build {5}\nDevice Brand: {2}\nDevice Model: {3}\nDevice Manufacturer: {4}</string>
+    <string name="type_here_to_generate_qr">Ketik disini untuk Generate QR</string>
 </resources>

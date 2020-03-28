@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
@@ -23,9 +24,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
@@ -48,10 +51,11 @@ public class GeneratorFragment extends Fragment {
   private EditText inputText;
   private View root;
   private SharedPreferences sharedPreferences;
-  private String ocrData;
   private ImageView qrGeneratedImage;
   private File myDir;
   private File file;
+  private TextView qrCaption;
+  private SharedPreferences.Editor editor;
 
   public View onCreateView(@NonNull LayoutInflater inflater,
                            ViewGroup container, Bundle savedInstanceState) {
@@ -59,17 +63,24 @@ public class GeneratorFragment extends Fragment {
     generateQrCode();
     Button ocrButton = root.findViewById(R.id.ocr_button);
     qrGeneratedImage = root.findViewById(R.id.generated_qr_image);
+    qrCaption = root.findViewById(R.id.qr_caption);
     ocrButton.setOnClickListener(v -> launchOcr());
     String rootDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
     myDir = new File(rootDirectory + "/OCR to QR/");
     sharedPreferences = Objects.requireNonNull(this.getContext()).getSharedPreferences(OCR_DATA_FREPS, Context.MODE_PRIVATE);
     inputText = root.findViewById(R.id.qr_input_editText);
     inputText.addTextChangedListener(new TextWatcher() {
+      //      Ketika inputText di ubah atau di modifikasi, maka qrCaption dan qrGeneratedImage akan otomatis update
       public void afterTextChanged(Editable s) {
-        // you can call or do what you want with your EditText here
         QR_CONTENT = inputText.getText().toString();
+//        Update qrCaption
+        qrCaption.setText(QR_CONTENT);
+//        Update qrGeneratedImage
         generateQrCode();
-        // yourEditText...
+//        Simpan inputText value ke shared preferences agar ketika onResume akan lanjut pada value inputText terakhir
+        editor = Objects.requireNonNull(getActivity()).getSharedPreferences(OCR_DATA_FREPS, 0).edit();
+        editor.putString("ocr_data", inputText.getText().toString());
+        editor.apply();
       }
 
       public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -83,7 +94,8 @@ public class GeneratorFragment extends Fragment {
     ActivityCompat.requestPermissions(Objects.requireNonNull(getActivity()),
             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
             1);
-
+//    Untuk share qr
+//    Jika di fragment, maka harus menyertakan getActivity()
     Bundle extras = getActivity().getIntent().getExtras();
     byte[] b = new byte[0];
     if (extras != null) {
@@ -94,7 +106,32 @@ public class GeneratorFragment extends Fragment {
       bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
     }
     qrGeneratedImage.setImageBitmap(bitmap);
+    qrGeneratedImage.setOnClickListener(v -> saveImage());
+    qrGeneratedImage.setOnLongClickListener(v -> shareImage());
     return root;
+  }
+
+  private Bitmap getCombinedBitmap(Bitmap qrGeneratedBitmap, Bitmap qrCaptionBitmap) {
+    Bitmap drawnBitmap = null;
+
+    try {
+      int qrWidth = qrGeneratedImage.getDrawable().getIntrinsicWidth();
+      int qrHeight = qrGeneratedImage.getDrawable().getIntrinsicHeight();
+      int qrCapHeight = qrCaption.getMeasuredHeight();
+      drawnBitmap = Bitmap.createBitmap(qrWidth, qrHeight + qrCapHeight, Bitmap.Config.ARGB_8888);
+
+      Canvas canvas = new Canvas(drawnBitmap);
+      // JUST CHANGE TO DIFFERENT Bitmaps and coordinates .
+      canvas.drawBitmap(qrGeneratedBitmap, 0, 0, null);
+      canvas.drawBitmap(qrCaptionBitmap, 0, qrHeight, null);
+      //for more images :
+      // canvas.drawBitmap(b3, 0, 0, null);
+      // canvas.drawBitmap(b4, 0, 0, null);
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return drawnBitmap;
   }
 
   //Permission Marshmelo
@@ -124,13 +161,11 @@ public class GeneratorFragment extends Fragment {
 
   @Override
   public void onResume() {
-    ocrData = sharedPreferences.getString("ocr_data", getString(R.string.app_name));
+    String ocrData = sharedPreferences.getString("ocr_data", getString(R.string.app_name));
     Toast.makeText(getActivity(), ocrData, Toast.LENGTH_SHORT).show();
     inputText.setText(ocrData);
     QR_CONTENT = ocrData;
     generateQrCode();
-    qrGeneratedImage.setOnClickListener(v -> saveImage());
-    qrGeneratedImage.setOnLongClickListener(v -> shareImage());
     super.onResume();
   }
 
@@ -139,13 +174,10 @@ public class GeneratorFragment extends Fragment {
     CharSequence timestamp = DateFormat.format("MM-dd-yy HH:mm:ss", d.getTime());
     //    int yYear = Calendar.getInstance().get(Calendar.YEAR);
     //    int wWeek = Calendar.getInstance().get(Calendar.WEEK_OF_YEAR);
-    // File myDir = new File(root + "/Verifikasi Kode/" + yYear + "/RPS " + wWeek);
+    //    membuat directory
     myDir.mkdirs();
-/*        Random generator = new Random();
-        int n = 10000;
-        n = generator.nextInt(n);*/
 
-    String fname = ocrData + "_" + timestamp + ".jpg";
+    String fname = QR_CONTENT + "_" + timestamp + ".png";
     file = new File(myDir, fname);
     if (file.exists())
       file.delete();
@@ -153,7 +185,10 @@ public class GeneratorFragment extends Fragment {
       FileOutputStream out = new FileOutputStream(file);
       qrGeneratedImage.setDrawingCacheEnabled(true);
       qrGeneratedImage.buildDrawingCache();
-      Bitmap bitmap = Bitmap.createBitmap(qrGeneratedImage.getDrawingCache());
+      qrCaption.setDrawingCacheEnabled(true);
+      qrCaption.buildDrawingCache();
+      Bitmap bitmap = Bitmap.createBitmap(getCombinedBitmap(qrGeneratedImage.getDrawingCache(), qrCaption.getDrawingCache()));
+      qrCaption.setDrawingCacheEnabled(false);
       qrGeneratedImage.setDrawingCacheEnabled(false);
       bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
       out.flush();
@@ -175,17 +210,17 @@ public class GeneratorFragment extends Fragment {
     saveImage();
     if (Build.VERSION.SDK_INT >= 24) {
       try {
-        Method m = StrictMode.class.getMethod("disableDeathOnFileUriExposure");
+        Method m = StrictMode.class.getMethod(getString(R.string.disableDeathOnFileUriExposure));
         m.invoke(null);
       } catch (Exception e) {
         e.printStackTrace();
       }
     }
-    /**
-     * Used by lame internal apps that haven't done the hard work to get
-     * themselves off file:// Uris yet.
-     */
-    // https://stackoverflow.com/questions/38200282/android-os-fileuriexposedexception-file-storage-emulated-0-test-txt-exposed
+    /*
+      Used by lame internal apps that haven't done the hard work to get
+      themselves off file:// Uris yet.
+      https://stackoverflow.com/questions/38200282/android-os-fileuriexposedexception-file-storage-emulated-0-test-txt-exposed
+    */
     Intent shareIntent;
     Uri bmpUri = Uri.fromFile(file);
     shareIntent = new Intent(android.content.Intent.ACTION_SEND);
@@ -194,8 +229,24 @@ public class GeneratorFragment extends Fragment {
     shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
     shareIntent.putExtra(Intent.EXTRA_TEXT, "Hey please check this application " + "https://play.google.com/store/apps/details?id=" + Objects.requireNonNull(getContext()).getPackageName());
     shareIntent.setType("image/png");
-    startActivity(Intent.createChooser(shareIntent, "Share with"));
+    startActivityForResult(Intent.createChooser(shareIntent, "Share with"), 2301);
     return true;
+  }
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+
+    //Check if it is from the same code, if yes delete the temp file
+    if (requestCode == 2301) {
+      try {
+        if (file.exists())
+          file.delete();
+        Log.d("share", file + "deleted");
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   private void launchOcr() {
