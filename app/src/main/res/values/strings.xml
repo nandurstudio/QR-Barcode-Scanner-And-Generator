@@ -52,4 +52,5 @@
     <string name="realtime_qr_generator" translatable="false">Realtime QR generator view</string>
     <string name="button_scan_ocr" translatable="false">OCR to QR</string>
     <string name="disableDeathOnFileUriExposure" translatable="false">disableDeathOnFileUriExposure</string>
+    <string name="regex" translatable="false"><![CDATA[[|?*<\":>+\\[\\]/\']]]></string>
 </resources>

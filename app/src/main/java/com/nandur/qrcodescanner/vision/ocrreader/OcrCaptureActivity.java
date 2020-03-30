@@ -39,6 +39,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -70,10 +71,9 @@ public final class OcrCaptureActivity extends AppCompatActivity {
   // Constants used to pass extra data in the intent
   public static final String AutoFocus = "AutoFocus";
   public static final String UseFlash = "UseFlash";
-  public static final String TextBlockObject = "String";
-  public static final String OCR_DATA_FREPS = "OCRDataPref";
+  public static final String SHARED_TEXT = "shared_text";
 
-    private CameraSource cameraSource;
+  private CameraSource cameraSource;
   private CameraSourcePreview preview;
   private GraphicOverlay<OcrGraphic> graphicOverlay;
 
@@ -345,8 +345,8 @@ public final class OcrCaptureActivity extends AppCompatActivity {
         // tts.speak(text.getValue(), TextToSpeech.QUEUE_ADD, null, "DEFAULT");
         // MY_PREFS_NAME - a static String variable like:
         // public static final String MY_PREFS_NAME = "MyPrefsFile";
-        SharedPreferences.Editor editor = getSharedPreferences(OCR_DATA_FREPS,0).edit();
-        editor.putString("ocr_data", text.getValue());
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+        editor.putString(SHARED_TEXT, text.getValue());
         // editor.putInt("idName", 12);
         editor.apply();
         super.onBackPressed();

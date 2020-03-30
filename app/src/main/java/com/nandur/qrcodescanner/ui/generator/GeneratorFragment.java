@@ -1,7 +1,6 @@
 package com.nandur.qrcodescanner.ui.generator;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -31,6 +30,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
 import com.google.zxing.BarcodeFormat;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
@@ -42,8 +42,9 @@ import java.io.FileOutputStream;
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
-import static com.nandur.qrcodescanner.vision.ocrreader.OcrCaptureActivity.OCR_DATA_FREPS;
+import static com.nandur.qrcodescanner.vision.ocrreader.OcrCaptureActivity.SHARED_TEXT;
 
 public class GeneratorFragment extends Fragment {
 
@@ -67,8 +68,9 @@ public class GeneratorFragment extends Fragment {
     ocrButton.setOnClickListener(v -> launchOcr());
     String rootDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
     myDir = new File(rootDirectory + "/OCR to QR/");
-    sharedPreferences = Objects.requireNonNull(this.getContext()).getSharedPreferences(OCR_DATA_FREPS, Context.MODE_PRIVATE);
+    sharedPreferences = PreferenceManager.getDefaultSharedPreferences(Objects.requireNonNull(getActivity()));
     inputText = root.findViewById(R.id.qr_input_editText);
+
     inputText.addTextChangedListener(new TextWatcher() {
       //      Ketika inputText di ubah atau di modifikasi, maka qrCaption dan qrGeneratedImage akan otomatis update
       public void afterTextChanged(Editable s) {
@@ -78,8 +80,8 @@ public class GeneratorFragment extends Fragment {
 //        Update qrGeneratedImage
         generateQrCode();
 //        Simpan inputText value ke shared preferences agar ketika onResume akan lanjut pada value inputText terakhir
-        editor = Objects.requireNonNull(getActivity()).getSharedPreferences(OCR_DATA_FREPS, 0).edit();
-        editor.putString("ocr_data", inputText.getText().toString());
+        editor = PreferenceManager.getDefaultSharedPreferences(Objects.requireNonNull(getActivity())).edit();
+        editor.putString(SHARED_TEXT, inputText.getText().toString());
         editor.apply();
       }
 
@@ -161,7 +163,7 @@ public class GeneratorFragment extends Fragment {
 
   @Override
   public void onResume() {
-    String ocrData = sharedPreferences.getString("ocr_data", getString(R.string.app_name));
+    String ocrData = sharedPreferences.getString(SHARED_TEXT, getString(R.string.app_name));
     Toast.makeText(getActivity(), ocrData, Toast.LENGTH_SHORT).show();
     inputText.setText(ocrData);
     QR_CONTENT = ocrData;
@@ -176,8 +178,17 @@ public class GeneratorFragment extends Fragment {
     //    int wWeek = Calendar.getInstance().get(Calendar.WEEK_OF_YEAR);
     //    membuat directory
     myDir.mkdirs();
-
     String fname = QR_CONTENT + "_" + timestamp + ".png";
+
+    // Pattern regex = Pattern.compile("[$&+,:;=\\\\?@#|/'<>.^*()%!-]");
+    Pattern regex = Pattern.compile(getString(R.string.regex));
+
+    if (regex.matcher(fname).find()) {
+      Log.d("TTT", "SPECIAL CHARS FOUND");
+      fname = fname.replaceAll(getString(R.string.regex), "-");
+    }
+
+    Log.d("File name", fname);
     file = new File(myDir, fname);
     if (file.exists())
       file.delete();
