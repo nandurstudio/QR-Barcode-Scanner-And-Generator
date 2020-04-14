@@ -7,4 +7,6 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="qrcode_view">32dp</dimen>
     <dimen name="qr_code_size" tools:ignore="PxUsage">500px</dimen>
+    <dimen name="app_bar_height">180dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
 </resources>

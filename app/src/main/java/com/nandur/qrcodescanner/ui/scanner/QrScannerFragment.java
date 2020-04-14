@@ -2,6 +2,7 @@ package com.nandur.qrcodescanner.ui.scanner;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -32,10 +34,15 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Objects;
 
+import static com.nandur.qrcodescanner.plugin.QrGenerator.toast;
+
 public class QrScannerFragment extends Fragment {
+  public static final String BARCODE_IMAGE_PATH = "barcode_image_path";
   private WebView myWebView;
   private TextView scanResult;
   private ImageView scanResultImg;
+  private SharedPreferences sharedPreferences;
+  private SharedPreferences.Editor editor;
 
   @SuppressLint("SetJavaScriptEnabled")
   public View onCreateView(@NonNull LayoutInflater inflater,
@@ -45,6 +52,7 @@ public class QrScannerFragment extends Fragment {
     myWebView = root.findViewById(R.id.webview);
     scanResult = root.findViewById(R.id.scan_result_text);
     scanResultImg = root.findViewById(R.id.scan_result_image);
+    sharedPreferences = PreferenceManager.getDefaultSharedPreferences(Objects.requireNonNull(getActivity()));
     FloatingActionButton fabButton = Objects.requireNonNull(getActivity()).findViewById(R.id.fab);
     fabButton.setOnClickListener(v -> startScan());
 
@@ -104,6 +112,11 @@ public class QrScannerFragment extends Fragment {
       Toast.makeText(getActivity(), "Cancelled", Toast.LENGTH_LONG).show();
     } else {
       Toast.makeText(getActivity(), "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+      // Put image path to sharedPreferences
+      editor = sharedPreferences.edit();
+      editor.putString(BARCODE_IMAGE_PATH, result.getBarcodeImagePath());
+      editor.apply();
+      toast(getActivity(), sharedPreferences.getString(BARCODE_IMAGE_PATH,""));
       File imgFile = new File(result.getBarcodeImagePath());
       if (imgFile.exists()) {
         // x refers to width, y refers to height

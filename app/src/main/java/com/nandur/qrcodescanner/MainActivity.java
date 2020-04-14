@@ -74,15 +74,25 @@ public class MainActivity extends AppCompatActivity {
     // as you specify a parent activity in AndroidManifest.xml.
     int id = item.getItemId();
 
-    if (id == R.id.action_settings) {
-      goToSetting();
-      return true;
+    switch (id) {
+      case R.id.action_settings:
+        goToSetting();
+        return true;
 //      case R.id.action_text_to_qr:
 //        goToShareToQR();
 //        return true;
+      case R.id.action_history:
+        goToHistory();
+        return true;
     }
 
     return super.onOptionsItemSelected(item);
+  }
+
+  private void goToHistory() {
+    Intent goToHistory = new
+            Intent(MainActivity.this, HistoryActivity.class);
+    startActivity(goToHistory);
   }
 
 //  private void goToShareToQR() {

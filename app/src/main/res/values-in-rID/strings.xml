@@ -18,4 +18,8 @@
     <string name="menu_title_communicate">Komunikasi</string>
     <string name="pattern_mailbody">\n\n-----------------------------\nJangan hapus bagian ini\nDevice OS: Android\nDevice OS version: {0}\nApp Version: {1} build {5}\nDevice Brand: {2}\nDevice Model: {3}\nDevice Manufacturer: {4}</string>
     <string name="type_here_to_generate_qr">Ketik disini untuk Generate QR</string>
+    <string name="action_text_to_qr">Teks jadi QR Code</string>
+    <string name="sdcard_permission_declined">Akses ke Kartu SD tidak diberikan, aplikasi tidak dapat menyimpan QR Code</string>
+    <string name="sdcard_permission_accepted">Access diberikan</string>
+    <string name="action_history">Riwayat</string>
 </resources>

@@ -8,8 +8,8 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/action_text_to_qr"
+        android:id="@+id/action_history"
         android:orderInCategory="100"
-        android:title="@string/action_text_to_qr"
+        android:title="@string/action_history"
         app:showAsAction="never" />
 </menu>
