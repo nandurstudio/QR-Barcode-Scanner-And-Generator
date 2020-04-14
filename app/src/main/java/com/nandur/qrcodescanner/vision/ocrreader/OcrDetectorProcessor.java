@@ -28,7 +28,7 @@ import com.nandur.qrcodescanner.vision.ocrreader.ui.camera.GraphicOverlay;
  */
 public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
 
-    private GraphicOverlay<OcrGraphic> graphicOverlay;
+    private final GraphicOverlay<OcrGraphic> graphicOverlay;
 
     OcrDetectorProcessor(GraphicOverlay<OcrGraphic> ocrGraphicOverlay) {
         graphicOverlay = ocrGraphicOverlay;

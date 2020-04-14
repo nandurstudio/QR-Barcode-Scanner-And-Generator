@@ -53,4 +53,8 @@
     <string name="button_scan_ocr" translatable="false">OCR to QR</string>
     <string name="disableDeathOnFileUriExposure" translatable="false">disableDeathOnFileUriExposure</string>
     <string name="regex" translatable="false"><![CDATA[[|?*<\":>+\\[\\]/\']]]></string>
+    <string name="action_text_to_qr">Text To QR</string>
+    <string name="sdcard_permission_declined">Akses ke SDCARD tidak diijinkan, aplikasi tidak bisa menyimpan gambar</string>
+    <string name="sdcard_permission_accepted">Akses diizinkan</string>
+    <string name="folder_directory">/OCR to QR/</string>
 </resources>

@@ -212,6 +212,7 @@ public final class OcrCaptureActivity extends AppCompatActivity {
 
     // Creates and starts the camera.  Note that this uses a higher resolution in comparison
     // to other detection examples to enable the text recognizer to detect small pieces of text.
+    //noinspection deprecation
     cameraSource =
             new CameraSource.Builder(getApplicationContext(), textRecognizer)
                     .setFacing(CameraSource.CAMERA_FACING_BACK)

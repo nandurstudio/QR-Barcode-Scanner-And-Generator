@@ -100,50 +100,46 @@ public class QrScannerFragment extends Fragment {
     IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
     result.getBarcodeImagePath();
     result.getErrorCorrectionLevel();
-    if (result != null) {
-      if (result.getContents() == null) {
-        Toast.makeText(getActivity(), "Cancelled", Toast.LENGTH_LONG).show();
+    if (result.getContents() == null) {
+      Toast.makeText(getActivity(), "Cancelled", Toast.LENGTH_LONG).show();
+    } else {
+      Toast.makeText(getActivity(), "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+      File imgFile = new File(result.getBarcodeImagePath());
+      if (imgFile.exists()) {
+        // x refers to width, y refers to height
+        // first find startx, starty, endx, endy
+        Bitmap qrBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+        int width = qrBitmap.getWidth();
+        int height = qrBitmap.getHeight();
+        int newWidth = Math.min(height, width);
+        int newHeight = (height > width) ? height - (height - width) : height;
+        int cropW = (width - height) / 2;
+        cropW = Math.max(cropW, 0);
+        int cropH = (height - width) / 2;
+        cropH = Math.max(cropH, 0);
+        Bitmap cropImg = Bitmap.createBitmap(qrBitmap, cropW, cropH, newWidth, newHeight);
+        scanResultImg.setImageBitmap(cropImg);
+      }
+      try {
+        Log.d("Scan Result", result.getBarcodeImagePath());
+        Log.d("Scan Result", result.getContents());
+        Log.d("Scan Result", result.getErrorCorrectionLevel());
+        Log.d("Scan Result", result.getFormatName());
+        Log.d("Scan Result", Arrays.toString(result.getRawBytes()));
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+      if (isValid(result.getContents())) {
+        myWebView.setVisibility(View.VISIBLE);
+        myWebView.loadUrl(result.getContents());
       } else {
-        Toast.makeText(getActivity(), "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
-        File imgFile = new File(result.getBarcodeImagePath());
-        if (imgFile.exists()) {
-          // x refers to width, y refers to height
-          // first find startx, starty, endx, endy
-          Bitmap qrBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-          int width = qrBitmap.getWidth();
-          int height = qrBitmap.getHeight();
-          int newWidth = Math.min(height, width);
-          int newHeight = (height > width) ? height - (height - width) : height;
-          int cropW = (width - height) / 2;
-          cropW = Math.max(cropW, 0);
-          int cropH = (height - width) / 2;
-          cropH = Math.max(cropH, 0);
-          Bitmap cropImg = Bitmap.createBitmap(qrBitmap, cropW, cropH, newWidth, newHeight);
-          scanResultImg.setImageBitmap(cropImg);
-        }
         try {
-          Log.d("Scan Result", result.getBarcodeImagePath());
-          Log.d("Scan Result", result.getContents());
-          Log.d("Scan Result", result.getErrorCorrectionLevel());
-          Log.d("Scan Result", result.getFormatName());
-          Log.d("Scan Result", Arrays.toString(result.getRawBytes()));
+          myWebView.setVisibility(View.INVISIBLE);
         } catch (Exception e) {
           e.printStackTrace();
         }
-        if (isValid(result.getContents())) {
-          myWebView.setVisibility(View.VISIBLE);
-          myWebView.loadUrl(result.getContents());
-        } else {
-          try {
-            myWebView.setVisibility(View.INVISIBLE);
-          } catch (Exception e) {
-            e.printStackTrace();
-          }
-          scanResult.setText(result.getContents());
-        }
+        scanResult.setText(result.getContents());
       }
-    } else {
-      super.onActivityResult(requestCode, resultCode, data);
     }
   }
 }

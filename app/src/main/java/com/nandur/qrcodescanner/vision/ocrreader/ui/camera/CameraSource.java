@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 // Note: This requires Google Play Services 8.1 or higher, due to using indirect byte buffers for
 // storing images.
@@ -170,7 +171,7 @@ public class CameraSource {
      */
     public static class Builder {
         private final Detector<?> detector;
-        private CameraSource cameraSource = new CameraSource();
+        private final CameraSource cameraSource = new CameraSource();
 
         /**
          * Creates a camera source builder with the supplied context and detector.  Camera preview
@@ -344,13 +345,8 @@ public class CameraSource {
 
             // SurfaceTexture was introduced in Honeycomb (11), so if we are running and
             // old version of Android. fall back to use SurfaceView.
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                dummySurfaceTexture = new SurfaceTexture(DUMMY_TEXTURE_NAME);
-                camera.setPreviewTexture(dummySurfaceTexture);
-            } else {
-                dummySurfaceView = new SurfaceView(context);
-                camera.setPreviewDisplay(dummySurfaceView.getHolder());
-            }
+            dummySurfaceTexture = new SurfaceTexture(DUMMY_TEXTURE_NAME);
+            camera.setPreviewTexture(dummySurfaceTexture);
             camera.startPreview();
 
             processingThread = new Thread(frameProcessor);
@@ -422,12 +418,8 @@ public class CameraSource {
                     // SurfaceHolder.  If the developer doesn't want to display a preview we use a
                     // SurfaceTexture if we are running at least Honeycomb.
 
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                        camera.setPreviewTexture(null);
+                    camera.setPreviewTexture(null);
 
-                    } else {
-                        camera.setPreviewDisplay(null);
-                    }
                 } catch (Exception e) {
                     Log.e(TAG, "Failed to clear camera preview: " + e);
                 }
@@ -646,9 +638,6 @@ public class CameraSource {
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public boolean setAutoFocusMoveCallback(@Nullable AutoFocusMoveCallback cb) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            return false;
-        }
 
         synchronized (cameraLock) {
             if (camera != null) {
@@ -987,7 +976,7 @@ public class CameraSource {
         WindowManager windowManager =
                 (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         int degrees = 0;
-        int rotation = windowManager.getDefaultDisplay().getRotation();
+        int rotation = Objects.requireNonNull(windowManager).getDefaultDisplay().getRotation();
         switch (rotation) {
             case Surface.ROTATION_0:
                 degrees = 0;
