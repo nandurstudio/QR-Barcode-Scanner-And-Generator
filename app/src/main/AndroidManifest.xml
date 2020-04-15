@@ -21,9 +21,13 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".HistoryActivity"
-            android:label="@string/title_activity_scrolling"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:label="@string/action_history"
             android:theme="@style/AppTheme.NoActionBar">
-
+            <!--Remove to make it behave like pyshical back button-->
+            <!--            <meta-data
+                            android:name="android.support.PARENT_ACTIVITY"
+                            android:value=".MainActivity" />-->
         </activity>
 
         <provider
@@ -42,34 +46,29 @@
             android:label="@string/action_text_to_qr">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
-
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <data android:mimeType="image/*" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
-
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <data android:mimeType="text/plain" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND_MULTIPLE" />
-
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <data android:mimeType="image/*" />
             </intent-filter>
-
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+            <!--Remove to make it behave like pyshical back button-->
+            <!--            <meta-data
+                            android:name="android.support.PARENT_ACTIVITY"
+                            android:value=".MainActivity" />-->
         </activity>
         <activity
             android:name=".SettingsActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
@@ -80,6 +79,7 @@
             android:value="ocr" /> <!-- To use multiple models: android:value="ocr,model2,model3" -->
         <activity
             android:name=".AnyOrientationActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="fullSensor"
             android:stateNotNeeded="true"
             android:theme="@style/zxing_CaptureTheme"

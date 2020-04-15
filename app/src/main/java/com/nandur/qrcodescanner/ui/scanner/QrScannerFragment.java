@@ -116,7 +116,7 @@ public class QrScannerFragment extends Fragment {
       editor = sharedPreferences.edit();
       editor.putString(BARCODE_IMAGE_PATH, result.getBarcodeImagePath());
       editor.apply();
-      toast(getActivity(), sharedPreferences.getString(BARCODE_IMAGE_PATH,""));
+      toast(getActivity(), sharedPreferences.getString(BARCODE_IMAGE_PATH, ""));
       File imgFile = new File(result.getBarcodeImagePath());
       if (imgFile.exists()) {
         // x refers to width, y refers to height

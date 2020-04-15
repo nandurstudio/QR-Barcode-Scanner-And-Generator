@@ -2,32 +2,23 @@ package com.nandur.qrcodescanner;
 
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.nandur.qrcodescanner.picture.PictureItem;
 
-import java.io.File;
 import java.util.Objects;
 
 import static com.nandur.qrcodescanner.picture.PictureContent.deleteSavedImages;
-import static com.nandur.qrcodescanner.picture.PictureContent.downloadRandomImage;
-import static com.nandur.qrcodescanner.picture.PictureContent.loadImage;
 import static com.nandur.qrcodescanner.picture.PictureContent.loadSavedImages;
 import static com.nandur.qrcodescanner.plugin.QrGenerator.logger;
 
@@ -45,9 +36,17 @@ public class HistoryActivity extends AppCompatActivity
     setContentView(R.layout.activity_history);
     Toolbar toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
+    ActionBar actionBar = getSupportActionBar();
+    if (actionBar != null) {
+      actionBar.setDisplayHomeAsUpEnabled(true);
+      actionBar.setHomeButtonEnabled(true);
+//      https://stackoverflow.com/questions/28438030/how-to-make-back-icon-to-behave-same-as-physical-back-button-in-android
+    }
+
+    toolbar.setNavigationOnClickListener(view -> finish());
 
     context = this;
-    downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+//    downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
 
     if (recyclerViewAdapter == null) {
       Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment);
@@ -59,8 +58,9 @@ public class HistoryActivity extends AppCompatActivity
               DividerItemDecoration.VERTICAL);
       recyclerView.addItemDecoration(dividerItemDecoration);
     }
+    loadSavedImages(Objects.requireNonNull(context.getCacheDir()));
 
-    progressBar = findViewById(R.id.indeterminateBar);
+/*    progressBar = findViewById(R.id.indeterminateBar);
 
     final FloatingActionButton fab = findViewById(R.id.fab);
     fab.setOnClickListener(view -> runOnUiThread(() -> {
@@ -92,13 +92,13 @@ public class HistoryActivity extends AppCompatActivity
       }
     };
 
-    context.registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+    context.registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));*/
   }
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     // Inflate the menu; this adds items to the action bar if it is present.
-    getMenuInflater().inflate(R.menu.menu_history, menu);
+    getMenuInflater().inflate(R.menu.menu_delete_all, menu);
     return true;
   }
 
@@ -110,10 +110,22 @@ public class HistoryActivity extends AppCompatActivity
     int id = item.getItemId();
 
     //noinspection SimplifiableIfStatement
-    if (id == R.id.action_delete) {
+    switch (id) {
+      case R.id.action_delete:
 //      deleteSavedImages(Objects.requireNonNull(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)));
-      deleteSavedImages(context.getCacheDir());
-      recyclerViewAdapter.notifyDataSetChanged();
+        deleteSavedImages(context.getCacheDir());
+        recyclerViewAdapter.notifyDataSetChanged();
+        break;
+      case R.id.home:
+        // todo: goto back activity from here
+/*        Intent intent = new Intent(HistoryActivity.this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();*/
+        onBackPressed();
+        return true;
+      default:
+        return super.onOptionsItemSelected(item);
     }
     return super.onOptionsItemSelected(item);
   }
@@ -132,9 +144,6 @@ public class HistoryActivity extends AppCompatActivity
 //      loadSavedImages(Objects.requireNonNull(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)));
 //      logger(context, String.valueOf(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)));
       loadSavedImages(Objects.requireNonNull(context.getCacheDir()));
-      logger(context, String.valueOf(context.getCacheDir()));
-      logger(context, String.valueOf(context.getExternalCacheDir()));
-      logger(context, String.valueOf(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)));
       recyclerViewAdapter.notifyDataSetChanged();
     });
   }
@@ -143,5 +152,7 @@ public class HistoryActivity extends AppCompatActivity
   @Override
   public void onListFragmentInteraction(PictureItem item) {
     // This is where you'd handle clicking an item in the list
+    logger(this, item.uri.toString());
+    logger(this, item.date);
   }
 }

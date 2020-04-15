@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.nandur.qrcodescanner.history.MyItemRecyclerViewAdapter;
 import com.nandur.qrcodescanner.picture.PictureContent;
 import com.nandur.qrcodescanner.picture.PictureItem;
 

@@ -1,4 +1,4 @@
-package com.nandur.qrcodescanner;
+package com.nandur.qrcodescanner.history;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.nandur.qrcodescanner.ItemFragment.OnListFragmentInteractionListener;
+import com.nandur.qrcodescanner.R;
 import com.nandur.qrcodescanner.picture.PictureItem;
 
 import java.util.List;
@@ -41,14 +42,12 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
     holder.mImageView.setImageURI(mValues.get(position).uri);
     //holder.mDateView.setText(mValues.get(position).date);
 
-    holder.mView.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        if (null != mListener) {
-          // Notify the active callbacks interface (the activity, if the
-          // fragment is attached to one) that an item has been selected.
-          mListener.onListFragmentInteraction(holder.mItem);
-        }
+    holder.mView.setOnClickListener(v -> {
+      if (null != mListener) {
+        // Notify the active callbacks interface (the activity, if the
+        // fragment is attached to one) that an item has been selected.
+        mListener.onListFragmentInteraction(holder.mItem);
+
       }
     });
   }

@@ -17,45 +17,45 @@
 <androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
-        app:title="@string/about_header"
-        app:iconSpaceReserved="false">
+        app:iconSpaceReserved="false"
+        app:title="@string/about_header">
 
         <Preference
+            app:iconSpaceReserved="false"
             app:key="about"
-            app:title="@string/about_header"
             app:summary="@string/about_summary"
-            app:iconSpaceReserved="false"/>
+            app:title="@string/about_header" />
 
     </PreferenceCategory>
 
     <PreferenceCategory
-        app:title="@string/update_header"
-        app:iconSpaceReserved="false">
+        app:iconSpaceReserved="false"
+        app:title="@string/update_header">
 
         <Preference
+            app:iconSpaceReserved="false"
             app:key="current_version"
-            app:title="@string/version_title"
             app:summary="@string/version_summary"
-            app:iconSpaceReserved="false"/>
+            app:title="@string/version_title" />
 
         <Preference
+            app:iconSpaceReserved="false"
             app:key="check_update"
-            app:title="@string/update_title"
             app:summary="@string/update_summary"
-            app:iconSpaceReserved="false"/>
+            app:title="@string/update_title" />
 
     </PreferenceCategory>
 
     <PreferenceCategory
+        app:iconSpaceReserved="false"
         app:key="help_category"
-        app:title="@string/help_header"
-        app:iconSpaceReserved="false">
+        app:title="@string/help_header">
 
         <Preference
+            app:iconSpaceReserved="false"
             app:key="feedback"
             app:summary="@string/feedback_summary"
-            app:title="@string/feedback_title"
-            app:iconSpaceReserved="false"/>
+            app:title="@string/feedback_title" />
 
     </PreferenceCategory>
 

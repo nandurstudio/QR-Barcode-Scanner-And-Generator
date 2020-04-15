@@ -58,7 +58,6 @@
     <string name="sdcard_permission_accepted">Access granted</string>
     <string name="folder_directory" translatable="false">/OCR to QR/</string>
     <string name="action_history">History</string>
-    <string name="title_activity_scrolling" translatable="false">ScrollingActivity</string>
     <string name="large_text" translatable="false">
         "Material is the metaphor.\n\n"
 
