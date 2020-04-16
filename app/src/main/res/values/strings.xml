@@ -151,4 +151,7 @@
     <string name="action_delete" translatable="false">Delete all</string>
     <string name="created_at" translatable="false">Created At:</string>
     <string name="image_download_url" translatable="false">https://loremflickr.com/320/240</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -1,11 +1,8 @@
 package com.nandur.qrcodescanner;
 
-import android.app.DownloadManager;
-import android.content.BroadcastReceiver;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,21 +11,18 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.nandur.qrcodescanner.picture.PictureItem;
+import com.nandur.qrcodescanner.history.QrModel;
 
 import java.util.Objects;
 
-import static com.nandur.qrcodescanner.picture.PictureContent.deleteSavedImages;
-import static com.nandur.qrcodescanner.picture.PictureContent.loadSavedImages;
+import static com.nandur.qrcodescanner.history.QrContent.deleteCachedQr;
+import static com.nandur.qrcodescanner.history.QrContent.loadQrImageFromSqlPath;
 import static com.nandur.qrcodescanner.plugin.QrGenerator.logger;
 
 public class HistoryActivity extends AppCompatActivity
         implements ItemFragment.OnListFragmentInteractionListener {
   private HistoryActivity context;
-  private DownloadManager downloadManager;
   private RecyclerView.Adapter recyclerViewAdapter;
-  private BroadcastReceiver onComplete;
-  private View progressBar;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +52,8 @@ public class HistoryActivity extends AppCompatActivity
               DividerItemDecoration.VERTICAL);
       recyclerView.addItemDecoration(dividerItemDecoration);
     }
-    loadSavedImages(Objects.requireNonNull(context.getCacheDir()));
+    // loadSavedImages(Objects.requireNonNull(context.getCacheDir()));
+    loadQrImageFromSqlPath(this);
 
 /*    progressBar = findViewById(R.id.indeterminateBar);
 
@@ -112,8 +107,8 @@ public class HistoryActivity extends AppCompatActivity
     //noinspection SimplifiableIfStatement
     switch (id) {
       case R.id.action_delete:
-//      deleteSavedImages(Objects.requireNonNull(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)));
-        deleteSavedImages(context.getCacheDir());
+//      deleteCachedQr(Objects.requireNonNull(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)));
+        deleteCachedQr(context.getCacheDir());
         recyclerViewAdapter.notifyDataSetChanged();
         break;
       case R.id.home:
@@ -143,16 +138,19 @@ public class HistoryActivity extends AppCompatActivity
     runOnUiThread(() -> {
 //      loadSavedImages(Objects.requireNonNull(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)));
 //      logger(context, String.valueOf(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)));
-      loadSavedImages(Objects.requireNonNull(context.getCacheDir()));
+      //loadSavedImages(Objects.requireNonNull(context.getCacheDir()));
+      loadQrImageFromSqlPath(this);
       recyclerViewAdapter.notifyDataSetChanged();
     });
   }
 
 
   @Override
-  public void onListFragmentInteraction(PictureItem item) {
+  public void onListFragmentInteraction(QrModel item) {
     // This is where you'd handle clicking an item in the list
-    logger(this, item.uri.toString());
-    logger(this, item.date);
+    logger(this, "id: " + item.getId());
+    logger(this, "path: " + item.getPath());
+    logger(this, "content: " + item.getContent());
+    logger(this, "File last modified @ : "+ item.getDate());
   }
 }

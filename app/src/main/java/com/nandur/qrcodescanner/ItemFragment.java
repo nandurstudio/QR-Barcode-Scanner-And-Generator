@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.nandur.qrcodescanner.history.MyItemRecyclerViewAdapter;
-import com.nandur.qrcodescanner.picture.PictureContent;
-import com.nandur.qrcodescanner.picture.PictureItem;
+import com.nandur.qrcodescanner.history.QrContent;
+import com.nandur.qrcodescanner.history.QrModel;
+import com.nandur.qrcodescanner.history.RecyclerViewAdapter;
 
 /**
  * A fragment representing a list of Items.
@@ -69,11 +69,10 @@ public class ItemFragment extends Fragment {
       } else {
         recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
       }
-      recyclerView.setAdapter(new MyItemRecyclerViewAdapter(PictureContent.ITEMS, mListener));
+      recyclerView.setAdapter(new RecyclerViewAdapter(QrContent.PICTURE_ITEMS, mListener));
     }
     return view;
   }
-
 
   @Override
   public void onAttach(Context context) {
@@ -104,6 +103,6 @@ public class ItemFragment extends Fragment {
    */
   public interface OnListFragmentInteractionListener {
     // TODO: Update argument type and name
-    void onListFragmentInteraction(PictureItem item);
+    void onListFragmentInteraction(QrModel item);
   }
 }

@@ -27,11 +27,13 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.nandur.qrcodescanner.AnyOrientationActivity;
 import com.nandur.qrcodescanner.R;
+import com.nandur.qrcodescanner.sqlite.DBManager;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Objects;
 
 import static com.nandur.qrcodescanner.plugin.QrGenerator.toast;
@@ -43,11 +45,15 @@ public class QrScannerFragment extends Fragment {
   private ImageView scanResultImg;
   private SharedPreferences sharedPreferences;
   private SharedPreferences.Editor editor;
+  private DBManager dbManager;
 
   @SuppressLint("SetJavaScriptEnabled")
   public View onCreateView(@NonNull LayoutInflater inflater,
                            ViewGroup container, Bundle savedInstanceState) {
     View root = inflater.inflate(R.layout.fragment_qr_scanner, container, false);
+    // SQLite
+    dbManager = new DBManager(getActivity());
+    dbManager.open();
 
     myWebView = root.findViewById(R.id.webview);
     scanResult = root.findViewById(R.id.scan_result_text);
@@ -116,6 +122,17 @@ public class QrScannerFragment extends Fragment {
       editor = sharedPreferences.edit();
       editor.putString(BARCODE_IMAGE_PATH, result.getBarcodeImagePath());
       editor.apply();
+
+      File file = new File(result.getBarcodeImagePath());
+      Date lastModDate = new Date(file.lastModified());
+
+      // SQLite
+      final String path = result.getBarcodeImagePath();
+      final String contents = result.getContents();
+      final String date_created = lastModDate.toString();
+
+      dbManager.insert(path, contents, date_created);
+
       toast(getActivity(), sharedPreferences.getString(BARCODE_IMAGE_PATH, ""));
       File imgFile = new File(result.getBarcodeImagePath());
       if (imgFile.exists()) {

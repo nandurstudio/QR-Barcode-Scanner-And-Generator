@@ -11,6 +11,7 @@
     <fragment android:name="com.nandur.qrcodescanner.ItemFragment"
         android:id="@+id/main_fragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tools:ignore="FragmentTagUsage" />
 
 </androidx.core.widget.NestedScrollView>
