@@ -70,5 +70,35 @@
     <string name="admob_banner_unit_real" translatable="false">ca-app-pub-4368595636314473/4970128915</string>
     <string name="admob_native_unit_real" translatable="false">ca-app-pub-4368595636314473/5500805474</string>
 
+    <string name="quickstart_message" translatable="false">Click the SUBSCRIBE TO WEATHER button below to subscribe to the
+        weather topic. Messages sent to the weather topic will be received. The LOG TOKEN button logs the
+        InstanceID token to logcat.</string>
+
+    <!--    Update notification-->
+    <string name="update_notification_channel_name" translatable="false">Update</string>
+    <string name="update_notification_channel_id" translatable="false">Update Channel</string>
+    <string name="subscribe_to_update" translatable="false">Subscribe To Update</string>
+    <string name="msg_subscribed_update" translatable="false">Subscribed to update topic</string>
+    <string name="msg_subscribe_update_failed" translatable="false">Failed to subscribe to update topic</string>
+
+    <!--
+        This is the name that users will see when interacting with this channel.
+        It should describe the category of notifications that will be sent through this channel
+     -->
+    <!-- [START fcm_default_icon_string] -->
+    <string name="default_notification_channel_name" translatable="false">Weather</string>
+    <!-- [END fcm_default_icon_string] -->
+    <string name="msg_subscribe_failed" translatable="false">Failed to subscribe to weather topic</string>
+    <string name="subscribe_to_weather" translatable="false">Subscribe To Weather</string>
+    <string name="msg_subscribed" translatable="false">Subscribed to weather topic</string>
+
+    <string name="log_token" translatable="false">Log Token</string>
+    <string name="msg_token_fmt" translatable="false">InstanceID Token: %s</string>
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="fcm_message" translatable="false">FCM Message</string>
+
+
+
+
 
 </resources>

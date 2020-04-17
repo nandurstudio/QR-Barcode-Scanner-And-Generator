@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.ads.AdListener;
@@ -25,6 +26,7 @@ import static com.nandur.qrcodescanner.plugin.QrGenerator.logger;
 
 public class HistoryActivity extends AppCompatActivity
         implements ItemFragment.OnListFragmentInteractionListener {
+  private static final String TAG = "HistoryActivity";
   private HistoryActivity context;
   private RecyclerView.Adapter recyclerViewAdapter;
   private AdView adView;
@@ -57,6 +59,10 @@ public class HistoryActivity extends AppCompatActivity
       DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
               DividerItemDecoration.VERTICAL);
       recyclerView.addItemDecoration(dividerItemDecoration);
+      LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+      linearLayoutManager.setReverseLayout(true);
+      linearLayoutManager.setStackFromEnd(true);
+      recyclerView.setLayoutManager(linearLayoutManager);
     }
 
     MobileAds.initialize(this, initializationStatus -> {
@@ -110,7 +116,8 @@ public class HistoryActivity extends AppCompatActivity
     });
 
     // loadSavedImages(Objects.requireNonNull(context.getCacheDir()));
-     loadQrImageFromSqlPath(this);
+    loadQrImageFromSqlPath(this);
+
 /*    progressBar = findViewById(R.id.indeterminateBar);
 
     final FloatingActionButton fab = findViewById(R.id.fab);
