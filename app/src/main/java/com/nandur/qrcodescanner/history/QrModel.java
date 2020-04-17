@@ -3,12 +3,14 @@ package com.nandur.qrcodescanner.history;
 public class QrModel {
   private int id;
   private String path, content, date;
+  private int viewType;
 
-  QrModel(int id, String path, String content, String date) {
+  public QrModel(int id, String path, String content, String date, int viewType) {
     this.id = id;
     this.path = path;
     this.content = content;
     this.date = date;
+    this.viewType = viewType;
   }
 
   public int getId() {
@@ -41,5 +43,13 @@ public class QrModel {
 
   public void setDate(String date) {
     this.date = date;
+  }
+
+  public int getViewType() {
+    return viewType;
+  }
+
+  public void setViewType(int viewType) {
+    this.viewType = viewType;
   }
 }

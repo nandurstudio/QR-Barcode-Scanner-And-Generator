@@ -11,6 +11,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.nandur.qrcodescanner.history.QrModel;
 
 import java.util.Objects;
@@ -23,6 +27,7 @@ public class HistoryActivity extends AppCompatActivity
         implements ItemFragment.OnListFragmentInteractionListener {
   private HistoryActivity context;
   private RecyclerView.Adapter recyclerViewAdapter;
+  private AdView adView;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +47,7 @@ public class HistoryActivity extends AppCompatActivity
     context = this;
 //    downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
 
+
     if (recyclerViewAdapter == null) {
       Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment);
       assert currentFragment != null;
@@ -52,9 +58,59 @@ public class HistoryActivity extends AppCompatActivity
               DividerItemDecoration.VERTICAL);
       recyclerView.addItemDecoration(dividerItemDecoration);
     }
-    // loadSavedImages(Objects.requireNonNull(context.getCacheDir()));
-    loadQrImageFromSqlPath(this);
 
+    MobileAds.initialize(this, initializationStatus -> {
+    });
+
+    adView = new AdView(this);
+    adView = findViewById(R.id.adView);
+    // adView.setAdSize(AdSize.BANNER);
+    // adView.setAdUnitId(ADMOB_BANNER_UNIT_ID);
+    // TODO: Add adView to your view hierarchy.
+    AdRequest adRequest = new AdRequest.Builder().build();
+    adView.loadAd(adRequest);
+    adView.setAdListener(new AdListener() {
+      @Override
+      public void onAdLoaded() {
+        // Code to be executed when an ad finishes loading.
+        logger(getBaseContext(), "onAdLoaded");
+      }
+
+      @Override
+      public void onAdFailedToLoad(int errorCode) {
+        // Code to be executed when an ad request fails.
+        logger(getBaseContext(), "onAdFailedToLoad");
+      }
+
+      @Override
+      public void onAdOpened() {
+        // Code to be executed when an ad opens an overlay that
+        // covers the screen.
+        logger(getBaseContext(), "onAdOpened");
+      }
+
+      @Override
+      public void onAdClicked() {
+        // Code to be executed when the user clicks on an ad.
+        logger(getBaseContext(), "onAdClicked");
+      }
+
+      @Override
+      public void onAdLeftApplication() {
+        // Code to be executed when the user has left the app.
+        logger(getBaseContext(), "onAdLeftApplication");
+      }
+
+      @Override
+      public void onAdClosed() {
+        // Code to be executed when the user is about to return
+        // to the app after tapping on an ad.
+        logger(getBaseContext(), "onAdClosed");
+      }
+    });
+
+    // loadSavedImages(Objects.requireNonNull(context.getCacheDir()));
+     loadQrImageFromSqlPath(this);
 /*    progressBar = findViewById(R.id.indeterminateBar);
 
     final FloatingActionButton fab = findViewById(R.id.fab);
@@ -89,6 +145,7 @@ public class HistoryActivity extends AppCompatActivity
 
     context.registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));*/
   }
+
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -151,6 +208,6 @@ public class HistoryActivity extends AppCompatActivity
     logger(this, "id: " + item.getId());
     logger(this, "path: " + item.getPath());
     logger(this, "content: " + item.getContent());
-    logger(this, "File last modified @ : "+ item.getDate());
+    logger(this, "File last modified @ : " + item.getDate());
   }
 }

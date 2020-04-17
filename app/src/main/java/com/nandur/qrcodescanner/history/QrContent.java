@@ -23,11 +23,11 @@ import static com.nandur.qrcodescanner.sqlite.DatabaseHelper.TABLE_NAME;
  * TODO: Replace all uses of this class before publishing your app.
  */
 public class QrContent {
-  public static final List<QrModel> PICTURE_ITEMS = new ArrayList<>();
+  public static final List<QrModel> QR_MODELS = new ArrayList<>();
   private static SQLiteDatabase db;
 
   public static void loadQrImageFromSqlPath(Context context) {
-    PICTURE_ITEMS.clear(); // Delete existing recycleview
+    QR_MODELS.clear(); // Delete existing recycleview
     // Select All Query
     String selectQuery = "SELECT  * FROM " + TABLE_NAME;
 
@@ -37,14 +37,31 @@ public class QrContent {
     // Looping through all rows and adding to list
     if (cursor.moveToFirst()) {
       do {
-        QrModel qrModel = new QrModel(
-                cursor.getInt(0),
-                cursor.getString(1),
-                cursor.getString(2),
-                cursor.getString(3));
-        PICTURE_ITEMS.add(qrModel);
-      } while (cursor.moveToNext());
+//        int listSize = QR_MODELS.size();
+//        Log.d(TAG, "loadQrImageFromSqlPath: QR_SIZE" + QR_MODELS.size());
+//        int ITEM = 0;
+//        int NATIVE_AD = 1;
+//        int[] viewType = new int[listSize];
+//        for (int i = 0; i < listSize; i++) {
+          QrModel qrModel = new QrModel(
+                  cursor.getInt(0),
+                  cursor.getString(1),
+                  cursor.getString(2),
+                  cursor.getString(3),
+                  0);
+          QR_MODELS.add(qrModel);
+//          Log.d(TAG, "loadQrImageFromSqlPath: i " + i);
+//          //insert native ads once in five items
+//          if (i > 1 && i % 5 == 0) {
+//            viewType[i] = NATIVE_AD;
+//          } else {
+//            viewType[i] = ITEM;
+//          }
+//        }
+      }
+      while (cursor.moveToNext());
     }
+    db.close();
   }
 
   public static void deleteCachedQr(File dir) {
@@ -59,7 +76,7 @@ public class QrContent {
       }
     }
     deleteSqlData();
-    PICTURE_ITEMS.clear(); // Delete RecycleViewList
+    QR_MODELS.clear(); // Delete RecycleViewList
   }
 
   private static void deleteSqlData() {

@@ -69,7 +69,7 @@ public class ItemFragment extends Fragment {
       } else {
         recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
       }
-      recyclerView.setAdapter(new RecyclerViewAdapter(QrContent.PICTURE_ITEMS, mListener));
+      recyclerView.setAdapter(new RecyclerViewAdapter(QrContent.QR_MODELS, mListener));
     }
     return view;
   }

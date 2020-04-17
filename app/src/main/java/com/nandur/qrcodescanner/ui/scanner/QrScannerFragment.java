@@ -130,8 +130,9 @@ public class QrScannerFragment extends Fragment {
       final String path = result.getBarcodeImagePath();
       final String contents = result.getContents();
       final String date_created = lastModDate.toString();
-
+      dbManager.open();
       dbManager.insert(path, contents, date_created);
+      dbManager.close();
 
       toast(getActivity(), sharedPreferences.getString(BARCODE_IMAGE_PATH, ""));
       File imgFile = new File(result.getBarcodeImagePath());
