@@ -10,10 +10,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
   public static final String TABLE_NAME = "SCANNEDQR";
 
   // Table columns
-  static final String _ID = "_id";
-  static final String PATH = "path";
-  static final String CONTENT = "result";
-  static final String DATE_CREATED = "date_created";
+  public static final String _ID = "_id";
+  public static final String PATH = "path";
+  public static final String CONTENT = "result";
+  public static final String DATE_CREATED = "date_created";
 
   // Database Information
   private static final String DB_NAME = "NANDUR_QRGENERATOR.DB";

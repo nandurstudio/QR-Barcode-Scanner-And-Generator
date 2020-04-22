@@ -14,7 +14,36 @@
   ~ limitations under the License.
   -->
 
-<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory
+        android:title="Scanner"
+        app:iconSpaceReserved="false">
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/auto_scan"
+            android:summary="Buka scanner ketika aplikasi dijalankan"
+            android:title="Otomatis Scan"
+            app:iconSpaceReserved="false" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/enable_sound"
+            android:summary="Perangkat berbunyi &quot;Beep&quot; jika scan berhasil"
+            android:title="Aktifkan Suara"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="Camera Source"
+        app:iconSpaceReserved="false">
+        <ListPreference
+            android:defaultValue="@string/back_camera"
+            android:entries="@array/camera_list_entries"
+            android:entryValues="@array/camera_list_entries_values"
+            android:key="@string/camera_list"
+            android:summary="%s"
+            android:title="Select camera source"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
 
     <PreferenceCategory
         app:iconSpaceReserved="false"

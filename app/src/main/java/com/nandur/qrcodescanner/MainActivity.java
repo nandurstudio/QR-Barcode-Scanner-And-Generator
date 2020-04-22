@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -75,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
               // Log and toast
               String msg = getString(R.string.msg_token_fmt, token);
               Log.d(TAG, msg);
-              Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+              // Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
             });
 
 //    To re-enable FCM, make a runtime call:

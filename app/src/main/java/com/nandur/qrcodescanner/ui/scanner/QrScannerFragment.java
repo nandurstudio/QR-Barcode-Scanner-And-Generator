@@ -3,8 +3,7 @@ package com.nandur.qrcodescanner.ui.scanner;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
@@ -23,9 +22,11 @@ import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.zxing.client.android.BeepManager;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.nandur.qrcodescanner.AnyOrientationActivity;
+import com.nandur.qrcodescanner.HistoryActivity;
 import com.nandur.qrcodescanner.R;
 import com.nandur.qrcodescanner.sqlite.DBManager;
 
@@ -36,7 +37,12 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
 
-import static com.nandur.qrcodescanner.plugin.QrGenerator.toast;
+import static com.nandur.qrcodescanner.plugin.QrGenerator.cropImageFromPath;
+import static com.nandur.qrcodescanner.plugin.QrGenerator.logger;
+import static com.nandur.qrcodescanner.sqlite.DBManager.getLastDataByColumn;
+import static com.nandur.qrcodescanner.sqlite.DatabaseHelper.CONTENT;
+import static com.nandur.qrcodescanner.sqlite.DatabaseHelper.PATH;
+import static com.nandur.qrcodescanner.sqlite.DatabaseHelper.TABLE_NAME;
 
 public class QrScannerFragment extends Fragment {
   public static final String BARCODE_IMAGE_PATH = "barcode_image_path";
@@ -44,8 +50,11 @@ public class QrScannerFragment extends Fragment {
   private TextView scanResult;
   private ImageView scanResultImg;
   private SharedPreferences sharedPreferences;
-  private SharedPreferences.Editor editor;
   private DBManager dbManager;
+  private boolean sndSetting;
+  private boolean vibratorSetting;
+  private BeepManager beepManager;
+  private SQLiteDatabase db;
 
   @SuppressLint("SetJavaScriptEnabled")
   public View onCreateView(@NonNull LayoutInflater inflater,
@@ -59,31 +68,62 @@ public class QrScannerFragment extends Fragment {
     scanResult = root.findViewById(R.id.scan_result_text);
     scanResultImg = root.findViewById(R.id.scan_result_image);
     sharedPreferences = PreferenceManager.getDefaultSharedPreferences(Objects.requireNonNull(getActivity()));
+
+    // Preferences
+    boolean autoScan = sharedPreferences.getBoolean(getString(R.string.auto_scan), false);
+    sndSetting = sharedPreferences.getBoolean(getString(R.string.enable_sound), false);
+    vibratorSetting = sharedPreferences.getBoolean(getString(R.string.enable_vibrate), false);
+
     FloatingActionButton fabButton = Objects.requireNonNull(getActivity()).findViewById(R.id.fab);
     fabButton.setOnClickListener(v -> startScan());
 
     WebSettings webSettings = myWebView.getSettings();
     webSettings.setJavaScriptEnabled(true);
 
-    try {
-      startScan();
-    } catch (Exception e) {
-      e.printStackTrace();
-      Toast.makeText(getActivity(), Arrays.toString(e.getStackTrace()), Toast.LENGTH_LONG).show();
+    beepManager = new BeepManager(getActivity());
+
+    // Start scanner on launch
+    if (autoScan) {
+      try {
+        startScan();
+      } catch (Exception e) {
+        e.printStackTrace();
+        Toast.makeText(getActivity(), Arrays.toString(e.getStackTrace()), Toast.LENGTH_LONG).show();
+      }
     }
 
+    dataQrPlaceholder();
+
     return root;
+  }
+
+  private void dataQrPlaceholder() {
+    String contentFromSQL = getLastDataByColumn(TABLE_NAME, CONTENT, getContext());
+    String pathFromSQL = getLastDataByColumn(TABLE_NAME, PATH, getContext());
+    scanResult.setText(contentFromSQL);
+    scanResultImg.setImageBitmap(cropImageFromPath(pathFromSQL));
   }
 
   private void startScan() {
     IntentIntegrator integrator = IntentIntegrator.forSupportFragment(this);
     integrator.setCaptureActivity(AnyOrientationActivity.class);
     integrator.setPrompt(getString(R.string.scan_message));
-    integrator.setCameraId(0); // Use a specific camera of the device
-    integrator.setBeepEnabled(false);
+    // Set the camera from preferences
+    String cameraSource = sharedPreferences.getString(getString(R.string.camera_list), "0");
+    if (cameraSource.equals("1")) {
+      integrator.setCameraId(1);
+    } else {
+      integrator.setCameraId(0); // Use a specific camera of the device
+    }
+    logger(Objects.requireNonNull(getContext()), cameraSource);
     integrator.setBarcodeImageEnabled(true);
     integrator.setOrientationLocked(false);
     integrator.initiateScan();
+    if (sndSetting) {
+      integrator.setBeepEnabled(true);
+    } else {
+      integrator.setBeepEnabled(false);
+    }
   }
 
 //  private void startScan() {
@@ -119,9 +159,14 @@ public class QrScannerFragment extends Fragment {
     } else {
       Toast.makeText(getActivity(), "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
       // Put image path to sharedPreferences
-      editor = sharedPreferences.edit();
+      SharedPreferences.Editor editor = sharedPreferences.edit();
       editor.putString(BARCODE_IMAGE_PATH, result.getBarcodeImagePath());
       editor.apply();
+
+      // Beep Manager
+      if (vibratorSetting) {
+        beepManager.setVibrateEnabled(true);
+      }
 
       File file = new File(result.getBarcodeImagePath());
       Date lastModDate = new Date(file.lastModified());
@@ -133,44 +178,42 @@ public class QrScannerFragment extends Fragment {
       dbManager.open();
       dbManager.insert(path, contents, date_created);
       dbManager.close();
-
-      toast(getActivity(), sharedPreferences.getString(BARCODE_IMAGE_PATH, ""));
-      File imgFile = new File(result.getBarcodeImagePath());
-      if (imgFile.exists()) {
-        // x refers to width, y refers to height
-        // first find startx, starty, endx, endy
-        Bitmap qrBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-        int width = qrBitmap.getWidth();
-        int height = qrBitmap.getHeight();
-        int newWidth = Math.min(height, width);
-        int newHeight = (height > width) ? height - (height - width) : height;
-        int cropW = (width - height) / 2;
-        cropW = Math.max(cropW, 0);
-        int cropH = (height - width) / 2;
-        cropH = Math.max(cropH, 0);
-        Bitmap cropImg = Bitmap.createBitmap(qrBitmap, cropW, cropH, newWidth, newHeight);
-        scanResultImg.setImageBitmap(cropImg);
-      }
+      dataQrPlaceholder();
+    }
+    try {
+      Log.d("Scan Result", result.getBarcodeImagePath());
+      Log.d("Scan Result", result.getContents());
+      Log.d("Scan Result", result.getErrorCorrectionLevel());
+      Log.d("Scan Result", result.getFormatName());
+      Log.d("Scan Result", Arrays.toString(result.getRawBytes()));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    if (isValid(result.getContents())) {
+      myWebView.setVisibility(View.VISIBLE);
+      myWebView.loadUrl(result.getContents());
+    } else {
       try {
-        Log.d("Scan Result", result.getBarcodeImagePath());
-        Log.d("Scan Result", result.getContents());
-        Log.d("Scan Result", result.getErrorCorrectionLevel());
-        Log.d("Scan Result", result.getFormatName());
-        Log.d("Scan Result", Arrays.toString(result.getRawBytes()));
+        myWebView.setVisibility(View.INVISIBLE);
+        goToHistory();
       } catch (Exception e) {
         e.printStackTrace();
       }
-      if (isValid(result.getContents())) {
-        myWebView.setVisibility(View.VISIBLE);
-        myWebView.loadUrl(result.getContents());
-      } else {
-        try {
-          myWebView.setVisibility(View.INVISIBLE);
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-        scanResult.setText(result.getContents());
-      }
+      scanResult.setText(result.getContents());
     }
+  }
+
+
+  private void goToHistory() {
+    Intent goToHistory = new
+            Intent(getActivity(), HistoryActivity.class);
+    startActivity(goToHistory);
+  }
+
+  @Override
+  public void onPause() {
+    super.onPause();
+    beepManager.setVibrateEnabled(false);
+    beepManager.setBeepEnabled(false);
   }
 }

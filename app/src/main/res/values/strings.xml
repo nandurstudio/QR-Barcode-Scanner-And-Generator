@@ -97,8 +97,14 @@
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
     <string name="fcm_message" translatable="false">FCM Message</string>
 
-
-
+    <!--    Sound setting-->
+    <string name="enable_sound" translatable="false">enable_sound</string>
+    <string name="enable_vibrate" translatable="false">enable_vibrate</string>
+    <string name="auto_scan" translatable="false">auto_scan</string>
+    <string name="switch_camera">switch_camera</string>
+    <string name="front_camera">1</string>
+    <string name="back_camera">0</string>
+    <string name="camera_list">camera_list</string>
 
 
 </resources>
