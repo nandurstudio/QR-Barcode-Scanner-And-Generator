@@ -1,30 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.scanner.QrScannerFragment"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".ui.scanner.QrScannerFragment">
 
-    <TextView
-        android:id="@+id/scan_result_text"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/qrcode_view"
-        android:layout_gravity="center"
-        android:textAlignment="center"
-        android:text="@string/app_name"/>
+        android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/scan_result_image"
-        android:layout_width="@dimen/qr_code_size"
-        android:layout_height="@dimen/qr_code_size"
-        android:layout_gravity="center"
-        android:src="@drawable/ic_launcher_background"
-        android:contentDescription="@string/app_name" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/paddingSmall"
+            android:orientation="vertical">
 
-    <WebView
-        android:id="@+id/webview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+            <androidx.cardview.widget.CardView
+                android:layout_width="520px"
+                android:layout_height="520px"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/paddingSmall"
+                android:elevation="2dp"
+                app:cardCornerRadius="15px">
+
+                <ImageView
+                    android:id="@+id/scan_result_image"
+                    android:layout_width="@dimen/qr_code_size"
+                    android:layout_height="@dimen/qr_code_size"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/ic_launcher_background" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/paddingSmall"
+                android:elevation="5dp"
+                app:cardCornerRadius="15px">
+
+                <TextView
+                    android:id="@+id/scan_result_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:text="@string/app_name"
+                    android:textAlignment="textStart"
+                    tools:ignore="RtlCompat" />
+
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/paddingSmall"
+                android:layout_marginRight="@dimen/paddingSmall"
+                android:layout_marginBottom="@dimen/paddingSmall"
+                android:elevation="1dp"
+                app:cardCornerRadius="15px">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="left"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/sharepic"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/rounded_corner"
+                        android:foreground="?attr/selectableItemBackgroundBorderless"
+                        android:padding="5dp"
+                        android:src="@android:drawable/ic_menu_share" />
+
+                    <ImageButton
+                        android:id="@+id/saveqr"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/rounded_corner"
+                        android:foreground="?attr/selectableItemBackgroundBorderless"
+                        android:padding="5dp"
+                        android:src="@android:drawable/ic_menu_save" />
+
+                    <ImageButton
+                        android:id="@+id/readloaud"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/rounded_corner"
+                        android:foreground="?attr/selectableItemBackgroundBorderless"
+                        android:padding="5dp"
+                        android:src="@android:drawable/ic_media_play" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/paddingSmall"
+                android:elevation="5dp"
+                app:cardCornerRadius="15px">
+
+                <WebView
+                    android:id="@+id/webview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    tools:ignore="WebViewLayout" />
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

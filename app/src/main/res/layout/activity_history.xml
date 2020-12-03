@@ -29,8 +29,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:contentDescription="@string/app_name"
-                android:scaleType="fitXY"
-                app:srcCompat="@drawable/ic_launcher_background" />
+                android:scaleType="centerCrop"
+                app:srcCompat="@mipmap/qr_logo_side" />
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"

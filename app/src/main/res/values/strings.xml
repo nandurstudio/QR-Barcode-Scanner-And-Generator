@@ -40,7 +40,7 @@
     <string name="menu_title_communicate">Communicate</string>
     <string name="bitly_share" translatable="false">https://bit.ly/</string>
     <string name="build_title" translatable="false">Build</string>
-    <string name="update_xml_resource" translatable="false">https://raw.githubusercontent.com/nandur93/QR-Barcode-Scanner-And-Generator/master/update-changelog.xml</string>
+    <string name="update_xml_resource" translatable="false">https://raw.githubusercontent.com/nandur93/Asset-Management-System/master/update-changelog.xml</string>
     <string name="pattern_mailbody">\n\n-----------------------------\nPlease do not delete this section\nDevice OS: Android\nDevice OS version: {0}\nApp Version: {1} build {5}\nDevice Brand: {2}\nDevice Model: {3}\nDevice Manufacturer: {4}</string>
     <string name="hashtag" translatable="false">#ocrtoqr</string>
 
@@ -101,10 +101,10 @@
     <string name="enable_sound" translatable="false">enable_sound</string>
     <string name="enable_vibrate" translatable="false">enable_vibrate</string>
     <string name="auto_scan" translatable="false">auto_scan</string>
-    <string name="switch_camera">switch_camera</string>
-    <string name="front_camera">1</string>
-    <string name="back_camera">0</string>
-    <string name="camera_list">camera_list</string>
+    <string name="switch_camera" translatable="false">switch_camera</string>
+    <string name="front_camera" translatable="false">1</string>
+    <string name="back_camera" translatable="false">0</string>
+    <string name="camera_list" translatable="false">camera_list</string>
 
 
 </resources>

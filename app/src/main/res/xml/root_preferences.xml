@@ -17,7 +17,7 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory
-        android:title="Scanner"
+        android:title="Database"
         app:iconSpaceReserved="false">
         <SwitchPreference
             android:defaultValue="true"

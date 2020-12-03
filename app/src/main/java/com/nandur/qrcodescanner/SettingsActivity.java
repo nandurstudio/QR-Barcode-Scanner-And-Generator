@@ -18,7 +18,6 @@ import com.github.javiersantos.appupdater.enums.Display;
 import com.github.javiersantos.appupdater.enums.UpdateFrom;
 
 import java.text.MessageFormat;
-import java.util.Objects;
 
 import static com.nandur.qrcodescanner.MainActivity.versCode;
 import static com.nandur.qrcodescanner.MainActivity.versName;
@@ -70,7 +69,7 @@ public class SettingsActivity extends AppCompatActivity {
 
       if (prefVersion != null) {
         prefVersion.setOnPreferenceClickListener(preference -> {
-          showInstalledAppDetails(getContext(), Objects.requireNonNull(getActivity()).getPackageName());
+          showInstalledAppDetails(getContext(), requireActivity().getPackageName());
           return true;
         });
       }
@@ -78,7 +77,7 @@ public class SettingsActivity extends AppCompatActivity {
       if (prefCheckUpdate != null) {
         // String update_xml = getResources().getString(R.string.update_xml_resource);
         prefCheckUpdate.setOnPreferenceClickListener(preference -> {
-          new AppUpdater(Objects.requireNonNull(getContext()))
+          new AppUpdater(requireContext())
                   .showEvery(250)
                   //.setUpdateFrom(UpdateFrom.GITHUB)
                   //.setGitHubUserAndRepo("javiersantos", "AppUpdater")
@@ -94,7 +93,7 @@ public class SettingsActivity extends AppCompatActivity {
 
       if (prefSendFeedback != null) {
         prefSendFeedback.setOnPreferenceClickListener(preference -> {
-          sendFeedback(Objects.requireNonNull(getContext()));
+          sendFeedback(requireContext());
           return true;
         });
       }

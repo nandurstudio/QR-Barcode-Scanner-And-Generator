@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/nav_header_desc"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        app:srcCompat="@drawable/ic_qr_scan_white" />
+        app:srcCompat="@mipmap/qr_logo_side" />
 
     <TextView
         android:layout_width="match_parent"
